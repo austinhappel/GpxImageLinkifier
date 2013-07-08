@@ -95,6 +95,8 @@ class GIL():
 
             if output_format == 'geojson':
                 result = self.output_geojson(matches)
+            elif output_format == 'gpx':
+                result = self.output_gpx(matches)
 
             if self.output_path is None:
                 self.write_to_cli(result)
@@ -181,7 +183,6 @@ filenames in the output data.''',
         args = parser.parse_args()
         return args
 
-    # globals
     gpx_datasets = []
 
     def parse_timeString(self, timestring):
@@ -318,6 +319,32 @@ filenames in the output data.''',
             })
 
         return json.dumps(geojson_python, indent=4)
+
+    def output_gpx(self, matches=None):
+        """returns GPX XML of the matches found."""
+
+        if matches is None:
+            matches = self.matches
+
+        gpx_data = gpxpy.gpx.GPX()
+
+        # Create first track in our GPX:
+        gpx_track = gpxpy.gpx.GPXTrack()
+        gpx_data.tracks.append(gpx_track)
+
+        # Create first segment in our GPX track:
+        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+        gpx_track.segments.append(gpx_segment)
+
+        # Create points:
+        for match in matches:
+            print dir(match)
+            print match
+            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(match['gpx'].longitude,
+                                      match['gpx'].latitude,
+                                      elevation=match['gpx'].elevation))
+
+        return gpx_data.to_xml()
 
     def write_to_cli(self, output):
         sys.stdout.write(output + '\n\r')
