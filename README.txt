@@ -1,0 +1,1 @@
+Links your photograph's timestamps to the timestamps in your GPX tracks.

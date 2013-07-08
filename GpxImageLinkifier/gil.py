@@ -7,6 +7,7 @@ import gpxpy
 import pytz
 import json
 import re
+import sys
 
 # constants
 CWD = os.getcwd()
@@ -24,7 +25,8 @@ class GIL():
     def __init__(self,
                  gpx_path=None, image_folder=None, output_path=None,
                  output_format='geojson', offset='0s', accuracy='1m',
-                 tz_images='UTC', tz_gpx='UTC', image_prefix=''):
+                 tz_images='UTC', tz_gpx='UTC', image_prefix='',
+                 isCLI=False):
 
         errors = False
 
@@ -84,7 +86,7 @@ class GIL():
 
         # automatically find matches and display output if being used from CLI.
         # ---------------------------------------------------------------------
-        if __name__ == "__main__":
+        if isCLI is True:
             # stop if there are errors with the input
             if errors is True:
                 return
@@ -304,8 +306,8 @@ filenames in the output data.''',
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
-                        match["gpx"].latitude,
                         match["gpx"].longitude,
+                        match["gpx"].latitude,
                         match["gpx"].elevation
                     ]
                 },
@@ -318,7 +320,7 @@ filenames in the output data.''',
         return json.dumps(geojson_python, indent=4)
 
     def write_to_cli(self, output):
-        print output
+        sys.stdout.write(output)
 
     def write_to_file(self, filepath, content):
         f = open(filepath, 'w')
@@ -326,7 +328,7 @@ filenames in the output data.''',
         f.close
 
     def write_error(self, output):
-        print 'ERROR: ' + output
+        sys.stdout.write('ERROR: ' + output)
 
     # -------------------------------------------------------------------------
     # Actionable methods
@@ -367,14 +369,19 @@ filenames in the output data.''',
         self.matches = image_gpx_links
         return image_gpx_links
 
-if __name__ == "__main__":
+
+def main():
     args = GIL.parse_arguments()
-    print args
-    gil = GIL(gpx_path=args.gpx_path,
-              image_folder=args.image_folder,
-              image_prefix=args.image_prefix,
-              output_path=args.output_path,
-              output_format=args.output_format,
-              offset=args.offset,
-              tz_images=args.tz_images,
-              tz_gpx=args.tz_gpx)
+    GIL(gpx_path=args.gpx_path,
+        image_folder=args.image_folder,
+        image_prefix=args.image_prefix,
+        output_path=args.output_path,
+        output_format=args.output_format,
+        offset=args.offset,
+        tz_images=args.tz_images,
+        tz_gpx=args.tz_gpx,
+        isCLI=True)
+
+
+if __name__ == "__main__":
+    main()

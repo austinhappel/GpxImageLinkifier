@@ -1,10 +1,10 @@
-import gpx_image_linker
 import datetime
 import pytz
+from GpxImageLinkifier import GIL
 
 # EXIF timestamps for test images:
 # test_files/image_files/jpg/IMG_7106.JPG             2013:05:25 18:40:43
-## NOTE: RANIER CAMERA CLOCK WAS AHEAD of GPS BY ~4m56s
+## NOTE: RANIER CAMERA CLOCK WAS AHEAD OF GPS BY ~4m56s
 # test_files/image_files/jpg/ranier/DSC_9506.jpg      2012-08-25 17:16:28
 # test_files/image_files/jpg/ranier/DSC_9507.jpg      2012-08-25 17:16:33
 # test_files/image_files/jpg/ranier/DSC_9508.jpg      2012-08-25 17:17:44
@@ -21,8 +21,8 @@ TEST_IMAGE_PATH = 'test_files/image_files/jpg/IMG_7106.JPG'
 TEST_IMAGE_FOLDER_PATH1 = 'test_files/image_files/jpg/ranier/'
 TEST_IMAGE_FOLDER_PATH2 = 'test_files/image_files/jpg/bandera/'
 
-gil1 = gpx_image_linker.GIL(TEST_GPX_PATH1, TEST_IMAGE_FOLDER_PATH1)
-gil2 = gpx_image_linker.GIL(TEST_GPX_PATH2, TEST_IMAGE_FOLDER_PATH2)
+gil1 = GIL(TEST_GPX_PATH1, TEST_IMAGE_FOLDER_PATH1)
+gil2 = GIL(TEST_GPX_PATH2, TEST_IMAGE_FOLDER_PATH2)
 
 
 def test_get_gpx_data():
