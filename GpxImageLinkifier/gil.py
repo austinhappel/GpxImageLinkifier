@@ -320,7 +320,7 @@ filenames in the output data.''',
         return json.dumps(geojson_python, indent=4)
 
     def write_to_cli(self, output):
-        sys.stdout.write(output)
+        sys.stdout.write(output + '\n\r')
 
     def write_to_file(self, filepath, content):
         f = open(filepath, 'w')
@@ -328,7 +328,7 @@ filenames in the output data.''',
         f.close
 
     def write_error(self, output):
-        sys.stdout.write('ERROR: ' + output)
+        self.write_to_cli('ERROR: ' + output)
 
     # -------------------------------------------------------------------------
     # Actionable methods
