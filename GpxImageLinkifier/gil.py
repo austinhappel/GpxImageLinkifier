@@ -338,11 +338,12 @@ filenames in the output data.''',
 
         # Create points:
         for match in matches:
-            print dir(match)
             print match
-            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(match['gpx'].longitude,
-                                      match['gpx'].latitude,
-                                      elevation=match['gpx'].elevation))
+            gpx_segment.points.append(gpxpy.gpx.GPXWaypoint(
+                longitude=match['gpx'].longitude,
+                latitude=match['gpx'].latitude,
+                elevation=match['gpx'].elevation,
+                name=match['image']['name']))
 
         return gpx_data.to_xml()
 
