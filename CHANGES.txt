@@ -1,1 +1,2 @@
+v0.1.0, 20130713 -- Added tests, improved API. Gil can now be properly used as an import.
 v0.0.1, 20130705 -- Initial release

@@ -3,7 +3,7 @@ import setuptools
 
 setup(
     name='GpxImageLinkifier',
-    version='0.0.1',
+    version='0.1.0',
     author='Austin Happel',
     author_email='austin@austinhappel.com',
     packages=['GpxImageLinkifier', 'GpxImageLinkifier.test'],
