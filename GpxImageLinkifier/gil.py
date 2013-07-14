@@ -29,29 +29,28 @@ class GIL():
                  isCLI=False):
 
         errors = False
+        self.isCLI = isCLI
+        self.gpx_datasets = []
 
         # required arguments
-        if gpx_path is None:
-            self.write_error(self.error_messages['required_param'] %
-                             'gpx_path')
-
-        if image_folder is None:
-            self.write_error(self.error_messages['required_param'] %
-                             'image_folder')
-
-        if self.validate_file(gpx_path, 'r') is False:
-            self.write_error(self.error_messages['bad_file'] % gpx_path)
-            errors = True
-        else:
-            self.gpx_path = os.path.abspath(gpx_path)
+        if gpx_path is not None:
+            if isinstance(gpx_path, str):
+                if self.validate_file(gpx_path, 'r') is False:
+                    self.write_error(self.error_messages['bad_file'] % gpx_path)
+                    errors = True
+                else:
+                    self.add_gpx_data(os.path.abspath(gpx_path))
+            elif isinstance(gpx_path, gpxpy.gpx.GPX):
+                self.add_gpx_data(gpx_path)
 
         # parse image folder
-        if self.validate_dir(image_folder) is False:
-            self.write_error(self.error_messages['bad_dir'] %
-                             image_folder)
-            errors = True
-        else:
-            self.image_folder = os.path.abspath(image_folder)
+        if image_folder is not None:
+            if self.validate_dir(image_folder) is False:
+                self.write_error(self.error_messages['bad_dir'] %
+                                 image_folder)
+                errors = True
+            else:
+                self.image_folder = os.path.abspath(image_folder)
 
         # parse images timezone
         if self.validate_timezone(tz_images) is False:
@@ -91,12 +90,12 @@ class GIL():
             if errors is True:
                 return
 
-            matches = self.find_matches(self.gpx_path, self.image_folder)
+            matches = self.find_matches(self.image_folder)
 
             if output_format == 'geojson':
-                result = self.output_geojson(matches)
+                result = self.to_geojson()
             elif output_format == 'gpx':
-                result = self.output_gpx(matches)
+                result = self.to_gpx()
 
             if self.output_path is None:
                 self.write_to_cli(result)
@@ -183,27 +182,25 @@ filenames in the output data.''',
         args = parser.parse_args()
         return args
 
-    gpx_datasets = []
+    def add_gpx_data(self, path):
+        """Appends new gpx data to self.gpx_datasets. Will parse a gpx file if
+        path is a file path, otherwise if path is a gpxpy.gpx.GPX object, it
+        will add the object directly to self.gpx_datasets."""
 
-    def parse_timeString(self, timestring):
-        """Parses a timestring like "1m2s" or "3h2m1s" into a timedelta"""
-        expression = '((?P<days>[0-9]*)[dD])*((?P<hours>[0-9]*)[hH])*((?P<minutes>[0-9]*)[mM])*((?P<seconds>[0-9]*)[sS])*'
-        time = re.search(expression, timestring)
-        days = int(time.group('days')) if time.group('days') is not None else 0
-        hours = int(time.group('hours')) if time.group('hours') is not None else 0
-        minutes = int(time.group('minutes')) if time.group('minutes') is not None else 0
-        seconds = int(time.group('seconds')) if time.group('seconds') is not None else 0
-        return datetime.timedelta(days=days,
-                                  hours=hours,
-                                  minutes=minutes,
-                                  seconds=seconds)
+        if isinstance(path, gpxpy.gpx.GPX):
+            self.gpx_datasets.append(path)
+            return path
+        else:
+            gpx_file = open(path, 'r')
+            parsed_gpx_data = gpxpy.parse(gpx_file)
+            self.gpx_datasets.append(parsed_gpx_data)
+            return parsed_gpx_data
 
-    def get_gpx_data(self, path):
-        """Parses a gpx file into a gpxpy object"""
-        gpx_file = open(path, 'r')
-        parsed_gpx_data = gpxpy.parse(gpx_file)
-        self.gpx_datasets.append(parsed_gpx_data)
-        return parsed_gpx_data
+    def localize_image_timestamp(self, ts):
+        # localize timestamp to desired timezone, then convert that to UTC.
+        timestamp = self.tz_images.localize(ts)
+
+        return timestamp.astimezone(pytz.utc)
 
     def get_image_timestamp(self, path):
         """Gets the timestamp of a photo from its exif data."""
@@ -217,16 +214,15 @@ filenames in the output data.''',
         timestamp = datetime.datetime.strptime(info['DateTime'],
                                                '%Y:%m:%d %H:%M:%S')
 
-        # localize timestamp to desired timezone, then convert that to UTC.
-        timestamp = self.tz_images.localize(timestamp)
+        return self.localize_image_timestamp(timestamp)
 
-        return timestamp.astimezone(pytz.utc)
-
-    def find_timestamp_gpx_match(self, target_datetime, gpx_data,
+    def find_timestamp_gpx_match(self, target_datetime, gpx_data=None,
                                  accuracyDelta=datetime.timedelta(minutes=1),
                                  offsetDelta=datetime.timedelta(seconds=0)):
 
         matches = []
+        if gpx_data is None:
+            gpx_data = self.gpx_datasets
 
         def check_for_match(point):
             ts = to_tz(point.time + offsetDelta)
@@ -248,23 +244,63 @@ filenames in the output data.''',
             return best_point_match
 
         def to_tz(ts):
+            """localize a timestamp to the same timezone as the GPX data,
+            then return it's UTC equivalent for comparison."""
             ts = self.tz_gpx.localize(ts)
             return ts.astimezone(pytz.utc)
 
-        # loop through tracks and search for match
-        for track in gpx_data.tracks:
-            for segment in track.segments:
-                for point in segment.points:
-                    check_for_match(point)
+        def walk_gpx(data):
+            """walk gpxpy data tracks and waypoints, looking for
+            closest match."""
+            for track in data.tracks:
+                for segment in track.segments:
+                    for point in segment.points:
+                        check_for_match(point)
 
-        for waypoint in gpx_data.waypoints:
-            check_for_match(point)
+            for waypoint in data.waypoints:
+                check_for_match(point)
+
+        if isinstance(gpx_data, list):
+            # gpx_data is internally stored array of gpx datasets. Need an
+            # extra loop.
+            for data in gpx_data:
+                walk_gpx(data)
+
+        elif isinstance(gpx_data, gpxpy.gpx.GPX):
+            # gpx_data is straight up gpxpy track. Start walking it.
+            walk_gpx(gpx_data)
 
         return check_closest_point_match(matches)
+
+    def save_matches_as_gpxpy(self):
+        gpx_data = gpxpy.gpx.GPX()
+
+        # Create points:
+        for match in self.matches:
+            gpx_data.waypoints.append(gpxpy.gpx.GPXWaypoint(
+                longitude=match['location'].longitude,
+                latitude=match['location'].latitude,
+                elevation=match['location'].elevation,
+                name=str(match['content'])))
+
+        self.matches_gpxpy = gpx_data
 
     # -------------------------------------------------------------------------
     # CLI-related methods
     # -------------------------------------------------------------------------
+
+    def parse_timeString(self, timestring):
+        """Parses a timestring like "1m2s" or "3h2m1s" into a timedelta"""
+        expression = '((?P<days>[0-9]*)[dD])*((?P<hours>[0-9]*)[hH])*((?P<minutes>[0-9]*)[mM])*((?P<seconds>[0-9]*)[sS])*'
+        time = re.search(expression, timestring)
+        days = int(time.group('days')) if time.group('days') is not None else 0
+        hours = int(time.group('hours')) if time.group('hours') is not None else 0
+        minutes = int(time.group('minutes')) if time.group('minutes') is not None else 0
+        seconds = int(time.group('seconds')) if time.group('seconds') is not None else 0
+        return datetime.timedelta(days=days,
+                                  hours=hours,
+                                  minutes=minutes,
+                                  seconds=seconds)
 
     def validate_timezone(self, timezoneString):
         try:
@@ -287,65 +323,8 @@ filenames in the output data.''',
         fp = os.path.abspath(filepath)
         return os.path.isdir(fp)
 
+    # CLI output methods
     # -------------------------------------------------------------------------
-    # Output related methods
-    # -------------------------------------------------------------------------
-
-    def output_geojson(self, matches=None):
-        """Generates a geojson file linking lat/long with images."""
-
-        if matches is None:
-            matches = self.matches
-
-        geojson_python = {
-            "type": "FeatureCollection",
-            "features": []
-        }
-        for match in matches:
-            geojson_python['features'].append({
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [
-                        match["gpx"].longitude,
-                        match["gpx"].latitude,
-                        match["gpx"].elevation
-                    ]
-                },
-                "properties": {
-                    "name": "Photo",
-                    "image": self.image_prefix + match["image"]["name"]
-                }
-            })
-
-        return json.dumps(geojson_python, indent=4)
-
-    def output_gpx(self, matches=None):
-        """returns GPX XML of the matches found."""
-
-        if matches is None:
-            matches = self.matches
-
-        gpx_data = gpxpy.gpx.GPX()
-
-        # Create first track in our GPX:
-        gpx_track = gpxpy.gpx.GPXTrack()
-        gpx_data.tracks.append(gpx_track)
-
-        # Create first segment in our GPX track:
-        gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        gpx_track.segments.append(gpx_segment)
-
-        # Create points:
-        for match in matches:
-            print match
-            gpx_segment.points.append(gpxpy.gpx.GPXWaypoint(
-                longitude=match['gpx'].longitude,
-                latitude=match['gpx'].latitude,
-                elevation=match['gpx'].elevation,
-                name=match['image']['name']))
-
-        return gpx_data.to_xml()
 
     def write_to_cli(self, output):
         sys.stdout.write(output + '\n\r')
@@ -359,14 +338,49 @@ filenames in the output data.''',
         self.write_to_cli('ERROR: ' + output)
 
     # -------------------------------------------------------------------------
+    # Output related methods
+    # -------------------------------------------------------------------------
+
+    def to_geojson(self):
+        """Generates a geojson file linking lat/long with images."""
+
+        geojson_python = {
+            "type": "FeatureCollection",
+            "features": []
+        }
+
+        for match in self.matches:
+            geojson_python['features'].append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        match["location"].longitude,
+                        match["location"].latitude,
+                        match["location"].elevation
+                    ]
+                },
+                "properties": {
+                    "content": self.image_prefix + str(match["content"])
+                }
+            })
+
+        return json.dumps(geojson_python, indent=4)
+
+    def to_xml(self):
+        """returns GPX XML of the matches found."""
+        return self.matches_gpxpy.to_xml()
+
+    # -------------------------------------------------------------------------
     # Actionable methods
     # -------------------------------------------------------------------------
 
-    def find_matches(self, gpx_path, image_path):
-        gpx_data = self.get_gpx_data(gpx_path)
-        abs_image_path = os.path.abspath(image_path)
-        images = os.listdir(os.path.abspath(image_path))
-        image_gpx_links = []
+    def find_matches(self, content):
+        """finds GPX timestamp matches for the content passed in. Content can
+        be either 1) an image path string or 2) a list/dict of objects with a
+        timestamp property."""
+        gpx_data = self.gpx_datasets
+        gpx_matches = []
         supported_file_extensions = [
             '.jpg',
             '.JPG',
@@ -374,28 +388,48 @@ filenames in the output data.''',
             '.jpeg'
         ]
 
-        for image in images:
-            image_path = os.path.join(abs_image_path, image)
-            file_name, file_extension = os.path.splitext(image_path)
+        def add_match(content, gpx_match):
+            if (gpx_match is not None):
+                gpx_matches.append({
+                    "content": content,
+                    "location": gpx_match
+                })
 
-            # only loop through supported files
-            if file_extension in supported_file_extensions:
-                match = self.find_timestamp_gpx_match(
-                    self.get_image_timestamp(image_path),
-                    gpx_data,
-                    accuracyDelta=self.accuracy,
-                    offsetDelta=self.offset)
+        if isinstance(content, str):
+            # content is an image path.
+            abs_image_path = os.path.abspath(image_path)
+            images = os.listdir(os.path.abspath(image_path))
 
-                if (match is not None):
-                    image_gpx_links.append({
-                        "image": {
-                            "name": image,
-                        },
-                        "gpx": match
-                    })
+            for image in images:
+                image_path = os.path.join(abs_image_path, image)
+                file_name, file_extension = os.path.splitext(image_path)
 
-        self.matches = image_gpx_links
-        return image_gpx_links
+                # only loop through supported files
+                if file_extension in supported_file_extensions:
+                    match = self.find_timestamp_gpx_match(
+                        self.get_image_timestamp(image_path),
+                        gpx_data,
+                        accuracyDelta=self.accuracy,
+                        offsetDelta=self.offset)
+
+                    add_match(image, match)
+
+        elif isinstance(content, list):
+            # content is a dict or list, no need for image exif parsing
+            for item in content:
+                if 'timestamp' in item and isinstance(item['timestamp'], datetime.datetime):
+                    match = self.find_timestamp_gpx_match(
+                        self.localize_image_timestamp(item['timestamp']),
+                        gpx_data,
+                        accuracyDelta=self.accuracy,
+                        offsetDelta=self.offset)
+
+                    add_match(item, match)
+
+        self.matches = gpx_matches
+        self.save_matches_as_gpxpy()
+
+        return gpx_matches
 
 
 def main():

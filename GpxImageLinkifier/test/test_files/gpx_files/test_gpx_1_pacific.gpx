@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="GPS Kit iOS App by Garafa" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+ <metadata>
+  <name>Skyline trail</name>
+ </metadata>
+ <trk>
+  <name>8/25/12 13:59:19</name>
+  <trkseg>
+   <trkpt lat="46.787799" lon="-121.733713">
+    <ele>1646</ele>
+    <time>2012-08-25T20:59:20.1530Z</time>
+   </trkpt>
+   <trkpt lat="46.787883" lon="-121.733653">
+    <ele>1650</ele>
+    <time>2012-08-25T20:59:22.0040Z</time>
+   </trkpt>
+   <trkpt lat="46.788014" lon="-121.733551">
+    <ele>1655</ele>
+    <time>2012-08-25T20:59:33.9980Z</time>
+   </trkpt>
+   <trkpt lat="46.788094" lon="-121.733468">
+    <ele>1656</ele>
+    <time>2012-08-25T20:59:44.9960Z</time>
+   </trkpt>
+   <trkpt lat="46.788135" lon="-121.733424">
+    <ele>1656</ele>
+    <time>2012-08-25T20:59:53.0000Z</time>
+   </trkpt>
+   <trkpt lat="46.788192" lon="-121.733354">
+    <ele>1658</ele>
+    <time>2012-08-25T20:59:59.0020Z</time>
+   </trkpt>
+  </trkseg>
+ </trk>
+ <wpt lat="46.788691" lon="-121.732516">
+  <name>Start of skyline trail</name>
+  <ele>1665</ele>
+  <time>2012-08-25T21:01:26.1900Z</time>
+ </wpt>
+ <wpt lat="46.790761" lon="-121.717126">
+  <name>Rest stop</name>
+  <ele>1804</ele>
+  <time>2012-08-25T21:45:17.2840Z</time>
+ </wpt>
+ <wpt lat="46.794070" lon="-121.716122">
+  <name>Rest area</name>
+  <ele>1849</ele>
+  <time>2012-08-25T21:59:51.9210Z</time>
+ </wpt>
+ <wpt lat="46.799211" lon="-121.722743">
+  <name>Break stop</name>
+  <ele>1961</ele>
+  <time>2012-08-25T22:47:17.0080Z</time>
+ </wpt>
+ <wpt lat="46.802208" lon="-121.728787">
+  <name>Panorama point</name>
+  <ele>2066</ele>
+  <time>2012-08-25T23:32:52.4050Z</time>
+ </wpt>
+ <wpt lat="46.799595" lon="-121.735059">
+  <name>The people line </name>
+  <ele>1915</ele>
+  <time>2012-08-26T00:07:05.0370Z</time>
+ </wpt>
+</gpx>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" creator="GPS Kit iOS App by Garafa" version="1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+ <metadata>
+  <name>Bandera mountain</name>
+ </metadata>
+ <trk>
+  <name>6/29/13, 15:09:22</name>
+  <trkseg>
+   <trkpt lat="47.418198" lon="-121.548204">
+    <ele>1564</ele>
+    <time>2013-06-29T22:09:22.8340Z</time>
+   </trkpt>
+   <trkpt lat="47.418186" lon="-121.548278">
+    <ele>1564</ele>
+    <time>2013-06-29T22:20:27.8540Z</time>
+   </trkpt>
+   <trkpt lat="47.418201" lon="-121.548345">
+    <ele>1563</ele>
+    <time>2013-06-29T22:20:38.9900Z</time>
+   </trkpt>
+   <trkpt lat="47.418243" lon="-121.548409">
+    <ele>1561</ele>
+    <time>2013-06-29T22:21:04.8450Z</time>
+   </trkpt>
+   <trkpt lat="47.418266" lon="-121.548478">
+    <ele>1562</ele>
+    <time>2013-06-29T22:21:20.9410Z</time>
+   </trkpt>
+   <trkpt lat="47.418270" lon="-121.548546">
+    <ele>1560</ele>
+    <time>2013-06-29T22:21:32.8610Z</time>
+   </trkpt>
+   <trkpt lat="47.418294" lon="-121.548606">
+    <ele>1559</ele>
+    <time>2013-06-29T22:21:54.1300Z</time>
+   </trkpt>
+   <trkpt lat="47.418298" lon="-121.548675">
+    <ele>1559</ele>
+    <time>2013-06-29T22:22:04.0600Z</time>
+   </trkpt>
+   <trkpt lat="47.418321" lon="-121.548750">
+    <ele>1556</ele>
+    <time>2013-06-29T22:22:18.8470Z</time>
+   </trkpt>
+   <trkpt lat="47.418332" lon="-121.548864">
+    <ele>1554</ele>
+    <time>2013-06-29T22:22:43.9460Z</time>
+   </trkpt>
+   <trkpt lat="47.418354" lon="-121.548942">
+    <ele>1552</ele>
+    <time>2013-06-29T22:23:18.1260Z</time>
+   </trkpt>
+   <trkpt lat="47.418393" lon="-121.548992">
+    <ele>1551</ele>
+    <time>2013-06-29T22:23:28.8400Z</time>
+   </trkpt>
+   <trkpt lat="47.418403" lon="-121.549054">
+    <ele>1549</ele>
+    <time>2013-06-29T22:23:36.9090Z</time>
+   </trkpt>
+   <trkpt lat="47.418426" lon="-121.549160">
+    <ele>1548</ele>
+    <time>2013-06-29T22:24:03.8430Z</time>
+   </trkpt>
+   <trkpt lat="47.418453" lon="-121.549218">
+    <ele>1546</ele>
+    <time>2013-06-29T22:24:09.9110Z</time>
+   </trkpt>
+   <trkpt lat="47.418472" lon="-121.549276">
+    <ele>1545</ele>
+    <time>2013-06-29T22:24:12.9540Z</time>
+   </trkpt>
+   <trkpt lat="47.418488" lon="-121.549346">
+    <ele>1544</ele>
+    <time>2013-06-29T22:24:18.8570Z</time>
+   </trkpt>
+   <trkpt lat="47.418503" lon="-121.549439">
+    <ele>1542</ele>
+    <time>2013-06-29T22:24:36.8540Z</time>
+   </trkpt>
+   <trkpt lat="47.418503" lon="-121.549527">
+    <ele>1539</ele>
+    <time>2013-06-29T22:25:13.9110Z</time>
+   </trkpt>
+   <trkpt lat="47.418515" lon="-121.549618">
+    <ele>1536</ele>
+    <time>2013-06-29T22:25:43.9250Z</time>
+   </trkpt>
+   <trkpt lat="47.418558" lon="-121.549651">
+    <ele>1536</ele>
+    <time>2013-06-29T22:26:00.8570Z</time>
+   </trkpt>
+   <trkpt lat="47.418548" lon="-121.549726">
+    <ele>1534</ele>
+    <time>2013-06-29T22:26:05.9230Z</time>
+   </trkpt>
+   <trkpt lat="47.418547" lon="-121.549801">
+    <ele>1532</ele>
+    <time>2013-06-29T22:26:28.8540Z</time>
+   </trkpt>
+   <trkpt lat="47.418539" lon="-121.549865">
+    <ele>1530</ele>
+    <time>2013-06-29T22:26:32.8510Z</time>
+   </trkpt>
+   <trkpt lat="47.418535" lon="-121.549936">
+    <ele>1529</ele>
+    <time>2013-06-29T22:26:37.9100Z</time>
+   </trkpt>
+   <trkpt lat="47.418555" lon="-121.550017">
+    <ele>1528</ele>
+    <time>2013-06-29T22:26:53.8820Z</time>
+   </trkpt>
+   <trkpt lat="47.418592" lon="-121.550062">
+    <ele>1524</ele>
+    <time>2013-06-29T22:27:26.9200Z</time>
+   </trkpt>
+   <trkpt lat="47.418590" lon="-121.550138">
+    <ele>1519</ele>
+    <time>2013-06-29T22:27:36.8500Z</time>
+   </trkpt>
+   <trkpt lat="47.418571" lon="-121.550218">
+    <ele>1519</ele>
+    <time>2013-06-29T22:27:43.9400Z</time>
+   </trkpt>
+   <trkpt lat="47.418568" lon="-121.550312">
+    <ele>1517</ele>
+    <time>2013-06-29T22:28:01.9470Z</time>
+   </trkpt>
+   <trkpt lat="47.418539" lon="-121.550369">
+    <ele>1515</ele>
+    <time>2013-06-29T22:28:07.9080Z</time>
+   </trkpt>
+   <trkpt lat="47.418556" lon="-121.550446">
+    <ele>1518</ele>
+    <time>2013-06-29T22:28:17.9370Z</time>
+   </trkpt>
+   <trkpt lat="47.418556" lon="-121.550515">
+    <ele>1511</ele>
+    <time>2013-06-29T22:29:02.9090Z</time>
+   </trkpt>
+   <trkpt lat="47.418536" lon="-121.550577">
+    <ele>1511</ele>
+    <time>2013-06-29T22:29:22.9280Z</time>
+   </trkpt>
+   <trkpt lat="47.418524" lon="-121.550646">
+    <ele>1506</ele>
+    <time>2013-06-29T22:29:58.9180Z</time>
+   </trkpt>
+   <trkpt lat="47.418552" lon="-121.550700">
+    <ele>1499</ele>
+    <time>2013-06-29T22:30:13.9900Z</time>
+   </trkpt>
+   <trkpt lat="47.418561" lon="-121.550764">
+    <ele>1496</ele>
+    <time>2013-06-29T22:30:48.8650Z</time>
+   </trkpt>
+   <trkpt lat="47.418585" lon="-121.550834">
+    <ele>1496</ele>
+    <time>2013-06-29T22:30:55.9340Z</time>
+   </trkpt>
+   <trkpt lat="47.418572" lon="-121.550904">
+    <ele>1492</ele>
+    <time>2013-06-29T22:31:17.9200Z</time>
+   </trkpt>
+   <trkpt lat="47.418588" lon="-121.550968">
+    <ele>1491</ele>
+    <time>2013-06-29T22:31:25.9250Z</time>
+   </trkpt>
+   <trkpt lat="47.418603" lon="-121.551054">
+    <ele>1485</ele>
+    <time>2013-06-29T22:31:58.9170Z</time>
+   </trkpt>
+   <trkpt lat="47.418589" lon="-121.551121">
+    <ele>1485</ele>
+    <time>2013-06-29T22:32:05.9200Z</time>
+   </trkpt>
+   <trkpt lat="47.418604" lon="-121.551196">
+    <ele>1479</ele>
+    <time>2013-06-29T22:32:37.9140Z</time>
+   </trkpt>
+   <trkpt lat="47.418597" lon="-121.551268">
+    <ele>1479</ele>
+    <time>2013-06-29T22:32:43.8500Z</time>
+   </trkpt>
+   <trkpt lat="47.418622" lon="-121.551335">
+    <ele>1479</ele>
+    <time>2013-06-29T22:32:49.9250Z</time>
+   </trkpt>
+  </trkseg>
+ </trk>
+ <wpt lat="47.424124" lon="-121.582641">
+  <name>Bandera mountain trailhead?</name>
+  <ele>0</ele>
+  <time>2013-06-29T15:03:59.6790Z</time>
+ </wpt>
+ <wpt lat="47.424428" lon="-121.582924">
+  <name>Car</name>
+  <ele>653</ele>
+  <time>2013-06-30T00:26:09.1770Z</time>
+ </wpt>
+</gpx>
