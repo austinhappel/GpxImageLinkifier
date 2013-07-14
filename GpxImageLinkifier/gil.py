@@ -4,6 +4,7 @@ import argparse
 import os
 import datetime
 import gpxpy
+import gpxpy.gpx
 import pytz
 import json
 import re
@@ -397,8 +398,8 @@ filenames in the output data.''',
 
         if isinstance(content, str):
             # content is an image path.
-            abs_image_path = os.path.abspath(image_path)
-            images = os.listdir(os.path.abspath(image_path))
+            abs_image_path = os.path.abspath(content)
+            images = os.listdir(os.path.abspath(content))
 
             for image in images:
                 image_path = os.path.join(abs_image_path, image)
