@@ -11,7 +11,7 @@ You can install this globally if you want. If you do, you'll get access to the `
 
 ::
   
-    pip install https://austinhappel.github.com/GpxImageLinkifier/something.tgz
+    pip install GpxImageLinkifier
   
 
 Usage
