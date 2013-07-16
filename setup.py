@@ -1,13 +1,13 @@
-from distutils.core import setup
-import setuptools
+from setuptools import setup
 
 setup(
     name='GpxImageLinkifier',
     version='0.1.0',
     author='Austin Happel',
     author_email='austin@austinhappel.com',
-    packages=['GpxImageLinkifier', 'GpxImageLinkifier.test'],
-    # scripts=['bin/gil.py', ],
+    packages=[
+        'GpxImageLinkifier',
+    ],
     url='http://pypi.python.org/pypi/GpxImageLinkifier/',
     license='LICENSE.txt',
     description='Links GPX tracks to photographs by matching the image\
@@ -17,7 +17,6 @@ setup(
         "PIL==1.1.7",
         "gpxpy==0.8.9",
         "lxml==3.2.1",
-        "wsgiref==0.1.2",
     ],
     entry_points={
         'console_scripts': [

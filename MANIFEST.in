@@ -1,3 +1,4 @@
 include *.txt
-include *.rst
+include *.py
 recursive-include docs *.txt
+exclude requirements.txt
