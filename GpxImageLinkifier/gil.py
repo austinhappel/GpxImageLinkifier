@@ -25,8 +25,8 @@ class GIL():
 
     def __init__(self,
                  gpx_path=None, image_folder=None, output_path=None,
-                 output_format='geojson', offset='0s', accuracy='1m',
-                 tz_images='UTC', tz_gpx='UTC', image_prefix='',
+                 output_format='geojson', offset_gpx='0s', offset_images='0s',
+                 accuracy='1m', tz_images='UTC', tz_gpx='UTC', image_prefix='',
                  isCLI=False):
 
         errors = False
@@ -80,7 +80,8 @@ class GIL():
             self.output_path = None
 
         # parse offset and accuracy timedelta strings
-        self.offset = self.parse_timeString(offset)
+        self.offset_gpx = self.parse_timeString(offset_gpx)
+        self.offset_images = self.parse_timeString(offset_images)
         self.accuracy = self.parse_timeString(accuracy)
         self.image_prefix = image_prefix
 
@@ -91,7 +92,7 @@ class GIL():
             if errors is True:
                 return
 
-            matches = self.find_matches(self.image_folder)
+            self.find_matches(self.image_folder)
 
             if output_format == 'geojson':
                 result = self.to_geojson()
@@ -152,9 +153,20 @@ minutes will count as a match. Defaults to 1m.''',
                             default='1m'
                             )
 
-        parser.add_argument('--offset',
+        parser.add_argument('--offset-gpx',
                             type=str,
-                            help='''The amount of time to offset GPX timestamps
+                            help='''The amount of time to ADD to GPX timestamps
+before comparing them to photo timestamps. Useful if the clocks on your GPS and
+camera are not in sync. Defaults to 0. Use a prefix of "+" to add time and "-"
+to subtract time. Use "s" for seconds, "m" for minutes and "h" for hours. For
+example input like: 2h20m means 2 hours and 20 minutes will be added to GPX
+timestamps before comparing timestamps on your images.''',
+                            default='0s'
+                            )
+
+        parser.add_argument('--offset-images',
+                            type=str,
+                            help='''The amount of time to ADD to image timestamps
 before comparing them to photo timestamps. Useful if the clocks on your GPS and
 camera are not in sync. Defaults to 0. Use a prefix of "+" to add time and "-"
 to subtract time. Use "s" for seconds, "m" for minutes and "h" for hours. For
@@ -180,6 +192,7 @@ timestamps before comparing timestamps on your images.''',
 filenames in the output data.''',
                             default=''
                             )
+
         args = parser.parse_args()
         return args
 
@@ -219,14 +232,19 @@ filenames in the output data.''',
 
     def find_timestamp_gpx_match(self, target_datetime, gpx_data=None,
                                  accuracyDelta=datetime.timedelta(minutes=1),
-                                 offsetDelta=datetime.timedelta(seconds=0)):
+                                 offsetGpxDelta=datetime.timedelta(seconds=0),
+                                 offsetImageDelta=datetime.timedelta(seconds=0)):
 
         matches = []
+
+        target_datetime = target_datetime + offsetImageDelta
+
         if gpx_data is None:
             gpx_data = self.gpx_datasets
 
         def check_for_match(point):
-            ts = to_tz(point.time + offsetDelta)
+            ts = to_tz(point.time + offsetGpxDelta)
+
             if abs(ts - target_datetime) < accuracyDelta:
                 matches.append(point)
 
@@ -238,8 +256,8 @@ filenames in the output data.''',
 
             for match in matches:
                 if best_point_match is None or\
-                    (abs(to_tz(match.time + offsetDelta) - target_datetime)
-                        < abs(to_tz(best_point_match.time + offsetDelta) - target_datetime)):
+                    (abs(to_tz(match.time + offsetGpxDelta) - target_datetime)
+                        < abs(to_tz(best_point_match.time + offsetGpxDelta) - target_datetime)):
                     best_point_match = match
 
             return best_point_match
@@ -411,7 +429,8 @@ filenames in the output data.''',
                         self.get_image_timestamp(image_path),
                         gpx_data,
                         accuracyDelta=self.accuracy,
-                        offsetDelta=self.offset)
+                        offsetGpxDelta=self.offset_gpx,
+                        offsetImageDelta=self.offset_images)
 
                     add_match(image, match)
 
@@ -423,7 +442,8 @@ filenames in the output data.''',
                         self.localize_image_timestamp(item['timestamp']),
                         gpx_data,
                         accuracyDelta=self.accuracy,
-                        offsetDelta=self.offset)
+                        offsetGpxDelta=self.offset_gpx,
+                        offsetImageDelta=self.offset_images)
 
                     add_match(item, match)
 
@@ -440,9 +460,11 @@ def main():
         image_prefix=args.image_prefix,
         output_path=args.output_path,
         output_format=args.output_format,
-        offset=args.offset,
+        offset_gpx=args.offset_gpx,
+        offset_images=args.offset_images,
         tz_images=args.tz_images,
         tz_gpx=args.tz_gpx,
+        accuracy=args.accuracy,
         isCLI=True)
 
 
