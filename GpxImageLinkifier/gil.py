@@ -27,7 +27,7 @@ class GIL():
                  gpx_path=None, image_folder=None, output_path=None,
                  output_format='geojson', offset_gpx='0s', offset_images='0s',
                  accuracy='1m', tz_images='UTC', tz_gpx='UTC', image_prefix='',
-                 verbose=False, isCLI=False):
+                 isCLI=False):
 
         errors = False
         self.isCLI = isCLI
@@ -84,7 +84,6 @@ class GIL():
         self.offset_images = self.parse_timeString(offset_images)
         self.accuracy = self.parse_timeString(accuracy)
         self.image_prefix = image_prefix
-        self.verbose = verbose
 
         # automatically find matches and display output if being used from CLI.
         # ---------------------------------------------------------------------
@@ -93,7 +92,7 @@ class GIL():
             if errors is True:
                 return
 
-            matches = self.find_matches(self.image_folder)
+            self.find_matches(self.image_folder)
 
             if output_format == 'geojson':
                 result = self.to_geojson()
@@ -194,11 +193,6 @@ filenames in the output data.''',
                             default=''
                             )
 
-        parser.add_argument('-v',
-                            '--verbose',
-                            help='''Display detailed logging information.''',
-                            action='store_true'
-                            )
         args = parser.parse_args()
         return args
 
@@ -251,9 +245,6 @@ filenames in the output data.''',
         def check_for_match(point):
             ts = to_tz(point.time + offsetGpxDelta)
 
-            self.log('GPX Point timestamp: %s' % point.time)
-            self.log('GPX Point timestamp + offset: %s' % ts)
-            self.log('Time delta of point - target timestamp: %s' % abs(ts - target_datetime))
             if abs(ts - target_datetime) < accuracyDelta:
                 matches.append(point)
 
@@ -354,10 +345,6 @@ filenames in the output data.''',
     # CLI output methods
     # -------------------------------------------------------------------------
 
-    def log(self, msg):
-        if self.verbose is True:
-            self.write_to_cli(msg)
-
     def write_to_cli(self, output):
         sys.stdout.write(output + '\n\r')
 
@@ -435,8 +422,6 @@ filenames in the output data.''',
             for image in images:
                 image_path = os.path.join(abs_image_path, image)
                 file_name, file_extension = os.path.splitext(image_path)
-                self.log('====================')
-                self.log('Finding match for: %s' % image)
 
                 # only loop through supported files
                 if file_extension in supported_file_extensions:
@@ -479,7 +464,7 @@ def main():
         offset_images=args.offset_images,
         tz_images=args.tz_images,
         tz_gpx=args.tz_gpx,
-        verbose=args.verbose,
+        accuracy=args.accuracy,
         isCLI=True)
 
 
